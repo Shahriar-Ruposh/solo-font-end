@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { Genre } from "../types";
+import { useEffect } from "react";
 import { fetchGenresThunk } from "../store/genresReducer";
 import { fetchGamesThunk } from "../store/gamesReducer";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +10,6 @@ const GenreList = () => {
   const { data: genres, isLoading: genresLoading, error: genresError } = useSelector((state: RootState) => state.genres);
 
   useEffect(() => {
-    console.log("Genre called");
     dispatch(fetchGenresThunk() as any);
   }, [dispatch]);
 
@@ -22,18 +20,21 @@ const GenreList = () => {
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
-      {genresLoading ? (
-        <p>Loading genres...</p>
-      ) : genresError ? (
-        <p>Error loading genres: {genresError}</p>
-      ) : (
-        genres?.map((genre) => (
-          <button key={genre.id} onClick={() => handleGenreSelect(genre.name)} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-gray-100`}>
-            {genre.name}
-          </button>
-        ))
-      )}
+    <div>
+      <h3 className="mb-4 text-xl font-bold">Genres</h3>
+      <div className="space-y-2">
+        {genresLoading ? (
+          <p className="text-gray-400">Loading genres...</p>
+        ) : genresError ? (
+          <p className="text-red-500">Error loading genres: {genresError}</p>
+        ) : (
+          genres?.map((genre) => (
+            <button key={genre.id} onClick={() => handleGenreSelect(genre.name)} className="w-full rounded-md bg-gray-800 px-4 py-2 text-left text-sm text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              {genre.name}
+            </button>
+          ))
+        )}
+      </div>
     </div>
   );
 };

@@ -8,7 +8,7 @@ import Navbar from "./layouts/NavBar";
 import Home from "./pages/Home";
 import { Provider } from "react-redux";
 import store from "./store/store";
-import "./index.css";
+// import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
