@@ -14,7 +14,7 @@ const GenreList = () => {
   }, [dispatch]);
 
   const handleGenreSelect = (genre: string) => {
-    const filters = { genres: genre };
+    const filters = { genre: genre };
     dispatch(fetchGamesThunk(filters) as any);
     dispatch(fetchGenresThunk() as any);
   };
@@ -28,11 +28,16 @@ const GenreList = () => {
         ) : genresError ? (
           <p className="text-red-500">Error loading genres: {genresError}</p>
         ) : (
-          genres?.map((genre) => (
-            <button key={genre.id} onClick={() => handleGenreSelect(genre.name)} className="w-full rounded-md bg-gray-800 px-4 py-2 text-left text-sm text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              {genre.name}
+          <>
+            <button onClick={() => handleGenreSelect("all-games")} className="w-full rounded-md bg-gray-800 px-4 py-2 text-left text-sm text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              All Games
             </button>
-          ))
+            {genres?.map((genre) => (
+              <button key={genre.id} onClick={() => handleGenreSelect(genre.name)} className="w-full rounded-md bg-gray-800 px-4 py-2 text-left text-sm text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                {genre.name}
+              </button>
+            ))}
+          </>
         )}
       </div>
     </div>

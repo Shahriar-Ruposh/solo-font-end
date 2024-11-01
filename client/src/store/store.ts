@@ -7,6 +7,7 @@ import { genresReducer } from "./genresReducer";
 import { gameDetailsReducer } from "./gameDetailsReducer";
 import { commentReducer } from "./commentReducer";
 import { ratingReducer } from "./ratingReducer";
+import { userGamesReducer } from "./userGameReducer";
 
 import { configureStore } from "@reduxjs/toolkit";
 
@@ -34,6 +35,7 @@ const store = configureStore({
     games: gamesReducer,
     genres: genresReducer,
     gameDetails: gameDetailsReducer,
+    userGames: userGamesReducer,
     comment: commentReducer,
     rating: ratingReducer,
   },

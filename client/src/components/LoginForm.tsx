@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const LoginSchema = z.object({
   email: z.string().email("Invalid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(4, "Password must be at least 4 characters"),
 });
 
 type LoginFormData = z.infer<typeof LoginSchema>;

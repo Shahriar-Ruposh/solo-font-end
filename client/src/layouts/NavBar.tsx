@@ -14,6 +14,10 @@ const NavBar = () => {
         <div className="flex items-center space-x-4">
           {isAuthenticated ? (
             <>
+              <Link to="/dashboard">
+                {" "}
+                <button className="text-gray-300">Dash Board</button>{" "}
+              </Link>
               <span className="text-gray-300">Welcome, {user?.name}</span>
               <button
                 onClick={() => dispatch(logoutUserThunk() as any)}
