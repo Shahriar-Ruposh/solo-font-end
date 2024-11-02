@@ -16,7 +16,7 @@ interface Game {
   release_date: string;
   publisher: string;
   thumbnail: string;
-  genres: Array<{ id: string; name: string }>;
+  Genres: Array<{ id: string; name: string }>;
 }
 
 interface UserGamesState {
@@ -43,6 +43,7 @@ export const userGamesReducer = (state = initialState, action: UserGamesAction):
     case SET_USER_GAMES:
       return { ...state, games: action.payload, isLoading: false };
     case SET_USER_GAME:
+      // console.log("state:        >>>", { ...state, selectedGame: action.payload });
       return { ...state, selectedGame: action.payload, isLoading: false };
     case SET_LOADING:
       return { ...state, isLoading: true, error: null };

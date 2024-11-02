@@ -3,10 +3,11 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUserGamesThunk, createUserGameThunk, updateUserGameThunk, deleteUserGameThunk } from "../store/userGameReducer";
 import { RootState } from "../store/store";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const UserDashboard: React.FC = () => {
   const { games, isLoading, error } = useSelector((state: RootState) => state.userGames);
+  const { gameId } = useParams<{ gameId: string }>();
   const token = useSelector((state: RootState) => state.auth.token);
   const dispatch = useDispatch();
 
@@ -44,7 +45,7 @@ const UserDashboard: React.FC = () => {
           <li key={game.id}>
             <h2>{game.title}</h2>
             <p>{game.description}</p>
-            <Link to="/dashboard/games/:gameId">
+            <Link to={`/dashboard/games/${game.id}`}>
               {" "}
               <button> Edit </button>{" "}
             </Link>

@@ -16,7 +16,8 @@ export const fetchUserGameById = async (gameId: string, token: string) => {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!response.ok) throw new Error("Failed to fetch game details");
-  return response.json();
+  const data = await response.json();
+  return data[0];
 };
 
 export const createUserGame = async (gameData: any, token: string) => {
