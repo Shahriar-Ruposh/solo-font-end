@@ -1,4 +1,3 @@
-// src/api/userGamesApi.ts
 import { API_BASE_URL } from "../utils/constants";
 
 export const fetchUserGames = async (token: string) => {

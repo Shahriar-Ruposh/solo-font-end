@@ -12,7 +12,7 @@ const AddGame: React.FC = () => {
   const dispatch = useDispatch();
   const token = useSelector((state: RootState) => state.auth.token);
 
-  const { data: genres, isLoading: genresLoading, error: genresError } = useSelector((state: RootState) => state.genres);
+  const { data: genres, isLoadingGenre: genresLoading, error: genresError } = useSelector((state: RootState) => state.genres);
 
   useEffect(() => {
     dispatch(fetchGenresThunk() as any);

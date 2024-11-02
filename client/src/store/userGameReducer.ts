@@ -21,7 +21,7 @@ interface Game {
 
 interface UserGamesState {
   games: Game[];
-  selectedGame: Game | null; // To hold single game data
+  selectedGame: Game | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -43,7 +43,6 @@ export const userGamesReducer = (state = initialState, action: UserGamesAction):
     case SET_USER_GAMES:
       return { ...state, games: action.payload, isLoading: false };
     case SET_USER_GAME:
-      // console.log("state:        >>>", { ...state, selectedGame: action.payload });
       return { ...state, selectedGame: action.payload, isLoading: false };
     case SET_LOADING:
       return { ...state, isLoading: true, error: null };
@@ -79,8 +78,8 @@ export const deleteGame = (gameId: string) => ({ type: DELETE_GAME, payload: gam
 export const fetchUserGamesThunk = (token: string) => async (dispatch: Dispatch) => {
   dispatch(setLoading());
   try {
-    const games = await fetchUserGames(token);
-    dispatch(setUserGames(games));
+    const response = await fetchUserGames(token);
+    dispatch(setUserGames(response.games));
   } catch (error) {
     dispatch(setError((error as Error).message));
   }

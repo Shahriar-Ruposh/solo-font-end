@@ -1,4 +1,3 @@
-// src/store/authReducer.ts
 import { Dispatch } from "redux";
 import { loginUser, registerUser, logoutUser } from "../api/authApi";
 

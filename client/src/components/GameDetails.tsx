@@ -7,7 +7,7 @@ import { RootState } from "../store/store";
 const GameDetails = () => {
   const { gameId } = useParams<{ gameId: string }>();
   const dispatch = useDispatch();
-  const { data: game, isLoading, error } = useSelector((state: RootState) => state.gameDetails);
+  const { data: game, isLoadingGenre: isLoading, error } = useSelector((state: RootState) => state.gameDetails);
 
   useEffect(() => {
     if (gameId) {

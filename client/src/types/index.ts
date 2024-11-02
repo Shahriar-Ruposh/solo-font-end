@@ -25,6 +25,6 @@ export interface Game {
 
 export interface ApiState<T> {
   data: T | null;
-  isLoading: boolean;
+  isLoadingGenre: boolean;
   error: string | null;
 }

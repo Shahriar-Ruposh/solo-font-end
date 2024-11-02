@@ -38,7 +38,7 @@ export const fetchRatingsThunk = (gameId: string) => async (dispatch: Dispatch) 
   try {
     const ratings = await fetchRatings(gameId);
     dispatch(setRatings(ratings));
-  } catch (error) {
+  } catch (error: any) {
     dispatch(setRatingError(error.message));
   }
 };
@@ -47,7 +47,7 @@ export const postRatingThunk = (gameId: string, token: string, rating: number) =
   try {
     const newRating = await postRating(gameId, token, rating);
     dispatch(addRating(newRating));
-  } catch (error) {
+  } catch (error: any) {
     dispatch(setRatingError(error.message));
   }
 };

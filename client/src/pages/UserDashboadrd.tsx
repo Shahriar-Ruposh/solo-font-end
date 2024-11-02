@@ -1,4 +1,3 @@
-// src/components/UserDashboard.tsx
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUserGamesThunk, createUserGameThunk, updateUserGameThunk, deleteUserGameThunk } from "../store/userGameReducer";
@@ -16,18 +15,6 @@ const UserDashboard: React.FC = () => {
       dispatch(fetchUserGamesThunk(token) as any);
     }
   }, [dispatch, token]);
-
-  const handleCreateGame = (gameData: any) => {
-    if (token) {
-      dispatch(createUserGameThunk(gameData, token) as any);
-    }
-  };
-
-  const handleUpdateGame = (gameId: string, gameData: any) => {
-    if (token) {
-      dispatch(updateUserGameThunk(gameId, gameData, token) as any);
-    }
-  };
 
   const handleDeleteGame = (gameId: string) => {
     if (token) {

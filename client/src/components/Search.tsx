@@ -13,7 +13,7 @@ const Search: React.FC = () => {
     if (searchTerm.trim()) {
       const filters = { search: searchTerm };
       dispatch(fetchGamesThunk(filters) as any);
-      dispatch(fetchGenresThunk() as any);
+      // dispatch(fetchGenresThunk() as any);
     }
   };
 

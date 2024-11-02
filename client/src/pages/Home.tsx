@@ -1,7 +1,6 @@
 import GameList from "../components/GamesList";
 import GenreList from "../components/GenreList";
 import Search from "../components/Search";
-import NavBar from "../layouts/NavBar";
 
 const Home = () => {
   return (

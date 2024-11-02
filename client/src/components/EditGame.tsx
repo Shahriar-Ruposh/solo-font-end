@@ -18,9 +18,7 @@ const EditGame: React.FC = () => {
   const { data: genres } = useSelector((state: RootState) => state.genres);
 
   if (game) {
-    console.log("tile: ", game.title);
     // console.log("genre: ", game.genres);
-    console.log("desc: ", game.Genres);
   }
 
   const {

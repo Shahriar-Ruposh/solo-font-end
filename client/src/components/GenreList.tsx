@@ -7,16 +7,18 @@ import { RootState } from "../store/store";
 const GenreList = () => {
   const dispatch = useDispatch();
 
-  const { data: genres, isLoading: genresLoading, error: genresError } = useSelector((state: RootState) => state.genres);
+  const { data: genres, isLoadingGenre: genresLoading, error: genresError } = useSelector((state: RootState) => state.genres);
 
   useEffect(() => {
     dispatch(fetchGenresThunk() as any);
-  }, [dispatch]);
+  }, []);
+
+  console.log(genresLoading);
 
   const handleGenreSelect = (genre: string) => {
     const filters = { genre: genre };
     dispatch(fetchGamesThunk(filters) as any);
-    dispatch(fetchGenresThunk() as any);
+    // dispatch(fetchGenresThunk() as any);
   };
 
   return (

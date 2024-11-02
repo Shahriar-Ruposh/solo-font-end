@@ -1,4 +1,3 @@
-// src/api/authApi.ts
 import { API_BASE_URL } from "../utils/constants";
 
 export const registerUser = async (name: string, email: string, password: string) => {

@@ -38,7 +38,7 @@ export const fetchCommentsThunk = (gameId: string) => async (dispatch: Dispatch)
   try {
     const comments = await fetchComments(gameId);
     dispatch(setComments(comments));
-  } catch (error) {
+  } catch (error: Error | any) {
     dispatch(setCommentError(error.message));
   }
 };
@@ -47,7 +47,7 @@ export const postCommentThunk = (gameId: string, token: string, comment: string)
   try {
     const newComment = await postComment(gameId, token, comment);
     dispatch(addComment(newComment));
-  } catch (error) {
+  } catch (error: Error | any) {
     dispatch(setCommentError(error.message));
   }
 };

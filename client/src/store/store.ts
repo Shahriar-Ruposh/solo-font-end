@@ -1,6 +1,3 @@
-// src/store/store.ts
-import { createStore, applyMiddleware, combineReducers } from "redux";
-import { thunk } from "redux-thunk";
 import { authReducer } from "./authReducer";
 import { gamesReducer } from "./gamesReducer";
 import { genresReducer } from "./genresReducer";
