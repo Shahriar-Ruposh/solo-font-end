@@ -30,7 +30,12 @@ const initialState: GamesState = {
 export const gamesReducer = (state = initialState, action: any): GamesState => {
   switch (action.type) {
     case SET_GAMES:
-      return { ...state, games: action.payload as Game[], isLoading: false, error: null };
+      return {
+        ...state,
+        games: action.payload,
+        isLoading: false,
+        error: null,
+      };
     case SET_LOADING:
       return { ...state, isLoading: true, error: null };
     case SET_ERROR:
@@ -44,21 +49,26 @@ export const gamesReducer = (state = initialState, action: any): GamesState => {
   }
 };
 
-// Action Creators
-export const setGames = (games: Game[]) => ({ type: SET_GAMES, payload: games });
-export const setLoading = () => ({ type: SET_LOADING });
-export const setError = (error: string) => ({ type: SET_ERROR, payload: error });
-export const setCurrentPage = (page: number) => ({ type: SET_CURRENT_PAGE, payload: page });
-export const setTotalPages = (totalPages: number) => ({ type: SET_TOTAL_PAGES, payload: totalPages });
+// Action Creators with Helper
+const createAction = (type: string, payload?: any) => ({ type, payload });
+
+export const setGames = (games: Game[]) => createAction(SET_GAMES, games);
+export const setLoading = () => createAction(SET_LOADING);
+export const setError = (error: string) => createAction(SET_ERROR, error);
+export const setCurrentPage = (page: number) => createAction(SET_CURRENT_PAGE, page);
+export const setTotalPages = (totalPages: number) => createAction(SET_TOTAL_PAGES, totalPages);
 
 // Thunk Action for Fetching Games
 export const fetchGamesThunk =
   (filters: Record<string, string> = {}, page: number = 1, limit: number = 5) =>
-  async (dispatch: Dispatch) => {
-    // dispatch(setLoading());
+  async (dispatch: Dispatch, getState: () => { games: GamesState }) => {
     try {
       const { games, currentPage, totalPages } = await fetchGames(filters, page, limit);
-      dispatch(setGames(games));
+      const reset = Object.keys(filters).length > 0 || page === 1;
+      const existingGames = getState().games.games;
+      const newGames = reset ? games : games.filter((game) => !existingGames.some((existing) => existing.id === game.id));
+
+      dispatch(setGames(reset ? games : [...existingGames, ...newGames]));
       dispatch(setCurrentPage(currentPage));
       dispatch(setTotalPages(totalPages));
     } catch (error) {
