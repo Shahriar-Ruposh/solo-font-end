@@ -8,10 +8,12 @@ const GameDetails = () => {
   const { gameId } = useParams<{ gameId: string }>();
   const dispatch = useDispatch();
   const { data: game, isLoadingGenre: isLoading, error } = useSelector((state: RootState) => state.gameDetails);
+  const token = useSelector((state: RootState) => state.auth.token);
+  console.log(token);
 
   useEffect(() => {
     if (gameId) {
-      dispatch(fetchGameDetailsThunk(gameId) as any);
+      dispatch(fetchGameDetailsThunk(token, gameId) as any);
     }
   }, [dispatch, gameId]);
 
@@ -20,7 +22,8 @@ const GameDetails = () => {
 
   return (
     <div className="rounded-lg bg-gray-800 p-6 shadow-lg">
-      <img src={`../../public/vite.svg`} alt={`${game.title} thumbnail`} className="mb-4 h-64 w-full object-cover rounded-lg" />
+      {/* <img src={`../../public/vite.svg`} alt={`${game.title} thumbnail`} className="mb-4 h-64 w-full object-cover rounded-lg" /> */}
+      <img src={game.thumbnail} alt={`${game.title} thumbnail`} className="mb-4 h-64 w-full object-cover rounded-lg" />
       <h2 className="mb-4 text-3xl font-bold">{game.title}</h2>
       <p className="mb-4 text-gray-300">{game.description}</p>
       <div className="grid gap-2 text-sm text-gray-400">

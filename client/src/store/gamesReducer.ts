@@ -60,7 +60,7 @@ export const setTotalPages = (totalPages: number) => createAction(SET_TOTAL_PAGE
 
 // Thunk Action for Fetching Games
 export const fetchGamesThunk =
-  (filters: Record<string, string> = {}, page: number = 1, limit: number = 5) =>
+  (filters: Record<string, string> = {}, page: number = 1, limit: number = 50) =>
   async (dispatch: Dispatch, getState: () => { games: GamesState }) => {
     try {
       const { games, currentPage, totalPages } = await fetchGames(filters, page, limit);

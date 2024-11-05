@@ -8,7 +8,7 @@ const Search: React.FC = () => {
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault();
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

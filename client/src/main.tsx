@@ -15,21 +15,19 @@ import EditGame from "./components/EditGame";
 // import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/games/:gameId" element={<GameDetails />} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/register" element={<SignUpForm />} />
-          <Route path="/dashboard" element={<UserDashboard />} />
-          <Route path="/dashboard/games" element={<AddGame />} />
-          <Route path="/dashboard/games/:gameId" element={<EditGame />} />
-          <Route path="*" element={<Home />} />
-        </Routes>
-      </BrowserRouter>
-    </Provider>
-  </StrictMode>
+  <Provider store={store}>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/games/:gameId" element={<GameDetails />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<SignUpForm />} />
+        <Route path="/dashboard" element={<UserDashboard />} />
+        <Route path="/dashboard/games" element={<AddGame />} />
+        <Route path="/dashboard/games/:gameId" element={<EditGame />} />
+        <Route path="*" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
+  </Provider>
 );

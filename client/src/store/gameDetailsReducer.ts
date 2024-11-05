@@ -36,10 +36,10 @@ export const setLoading = () => ({ type: SET_LOADING });
 export const setError = (error: string) => ({ type: SET_ERROR, payload: error });
 
 //thunk action
-export const fetchGameDetailsThunk = (gameId: string) => async (dispatch: Dispatch) => {
+export const fetchGameDetailsThunk = (token: any, gameId: string) => async (dispatch: Dispatch) => {
   dispatch(setLoading());
   try {
-    const game = await fetchGameDetails(gameId);
+    const game = await fetchGameDetails(token, gameId);
     dispatch(setGameDetails(game));
   } catch (error) {
     dispatch(setError((error as Error).message));

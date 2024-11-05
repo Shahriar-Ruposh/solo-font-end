@@ -1,12 +1,37 @@
 import { API_BASE_URL } from "../utils/constants";
 
-export const fetchUserGames = async (token: string) => {
-  const response = await fetch(`${API_BASE_URL}/games/my-games`, {
-    method: "GET",
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!response.ok) throw new Error("Failed to fetch user games");
-  return response.json();
+export const fetchUserGames = async (token: string, filters: Record<string, string>, page: number, limit: number) => {
+  // const response = await fetch(`${API_BASE_URL}/games/my-games`, {
+  //   method: "GET",
+  //   headers: { Authorization: `Bearer ${token}` },
+  // });
+  // if (!response.ok) throw new Error("Failed to fetch user games");
+  // return response.json();
+
+  try {
+    let url;
+    if (filters) {
+      const query = new URLSearchParams(filters).toString();
+      url = `${API_BASE_URL}/games/my-games?${query}&page=${page}&limit=${limit}`;
+    } else {
+      url = `${API_BASE_URL}/games/my-games?page=${page}&limit=${limit}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error("Failed to fetch games");
+
+    const data = await response.json();
+    return {
+      games: data.games,
+      currentPage: data.currentPage,
+      totalPages: data.totalPages,
+    };
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
 };
 
 export const fetchUserGameById = async (gameId: string, token: string) => {
