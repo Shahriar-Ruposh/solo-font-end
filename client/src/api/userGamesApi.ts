@@ -45,11 +45,28 @@ export const fetchUserGameById = async (gameId: string, token: string) => {
 };
 
 export const createUserGame = async (gameData: any, token: string) => {
+  const formData = new FormData();
+
+  // Append text fields
+  formData.append("title", gameData.title);
+  formData.append("publisher", gameData.publisher);
+  formData.append("release_date", gameData.release_date);
+  formData.append("description", gameData.description);
+
+  formData.append("genres", JSON.stringify(gameData.genres));
+
+  if (gameData.thumbnail) {
+    formData.append("thumbnail", gameData.thumbnail);
+  }
+
   const response = await fetch(`${API_BASE_URL}/games`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify(gameData),
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
   });
+
   if (!response.ok) throw new Error("Failed to create game");
   return response.json();
 };

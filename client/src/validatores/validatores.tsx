@@ -5,7 +5,7 @@ export const gameSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
   release_date: z.string().refine((date) => !isNaN(Date.parse(date)), { message: "Invalid date format" }),
   publisher: z.string().min(1, "Publisher is required"),
-  thumbnail: z.string().url("Invalid URL format"),
+  thumbnail: z.instanceof(File).optional(),
   genres: z.array(z.string()).nonempty("At least one genre is required"),
 });
 

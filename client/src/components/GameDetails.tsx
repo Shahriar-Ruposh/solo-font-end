@@ -23,7 +23,7 @@ const GameDetails = () => {
   return (
     <div className="rounded-lg bg-gray-800 p-6 shadow-lg">
       {/* <img src={`../../public/vite.svg`} alt={`${game.title} thumbnail`} className="mb-4 h-64 w-full object-cover rounded-lg" /> */}
-      <img src={game.thumbnail} alt={`${game.title} thumbnail`} className="mb-4 h-64 w-full object-cover rounded-lg" />
+      <img src={game.thumbnail} alt={`${game.title} thumbnail`} defaultValue={`../../public/vite.svg`} className="mb-4 h-64 w-full object-cover rounded-lg" />
       <h2 className="mb-4 text-3xl font-bold">{game.title}</h2>
       <p className="mb-4 text-gray-300">{game.description}</p>
       <div className="grid gap-2 text-sm text-gray-400">
