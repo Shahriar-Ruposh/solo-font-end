@@ -25,7 +25,7 @@ const Home = () => {
         {/* Flex container for Search and PublisherSearch */}
         <div className="flex gap-8">
           <Search onLoading={handleLoading} onSearch={showToast} />
-          <PublisherSearch onLoading={handleLoading} onSearch={showToast} />
+          {/* <PublisherSearch onLoading={handleLoading} onSearch={showToast} /> */}
           <SortByRating onLoading={handleLoading} />
         </div>
 
