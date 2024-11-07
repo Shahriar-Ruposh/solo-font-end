@@ -1,7 +1,7 @@
 import { GAMES_API_URL } from "../utils/constants";
 import { Game } from "../types";
 
-export const fetchGames = async (filters: Record<string, string>, page: number, limit: number): Promise<{ games: Game[]; currentPage: number; totalPages: number }> => {
+export const fetchGames = async (filters: any, page: number, limit: number): Promise<{ games: Game[]; currentPage: number; totalPages: number }> => {
   try {
     let url;
     if (filters) {

@@ -8,6 +8,7 @@ import { updateUserGameThunk, fetchUserGameByIdThunk } from "../store/userGameRe
 import { fetchGenresThunk } from "../store/genresReducer";
 import { useParams } from "react-router-dom";
 import Select from "react-select";
+import Toaster from "../components/Toaster"; // Import Toaster
 
 const EditGame: React.FC = () => {
   const { gameId } = useParams<{ gameId: string }>();
@@ -19,6 +20,9 @@ const EditGame: React.FC = () => {
 
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Loader state
+  const [toastMessage, setToastMessage] = useState<string>("");
+  const [toastColor, setToastColor] = useState<string>("green"); // Color for toast
 
   const {
     register,
@@ -43,18 +47,19 @@ const EditGame: React.FC = () => {
     if (gameId && token) {
       dispatch(fetchUserGameByIdThunk(gameId, token) as any);
     }
-  }, [dispatch, gameId, token]);
+  }, []);
 
   useEffect(() => {
     dispatch(fetchGenresThunk() as any);
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (game) {
+      const formattedReleaseDate = game.release_date ? game.release_date.split("T")[0] : ""; // Extract YYYY-MM-DD
       reset({
         title: game.title,
         description: game.description,
-        release_date: game.release_date,
+        release_date: formattedReleaseDate, // Use formatted date
         publisher: game.publisher,
         genres: game.Genres.map((g) => g.id),
       });
@@ -68,10 +73,23 @@ const EditGame: React.FC = () => {
     setThumbnailPreview(file ? URL.createObjectURL(file) : null);
   };
 
-  const onSubmit = (data: GameFormValues) => {
+  const onSubmit = async (data: GameFormValues) => {
     const updatedData = { ...data, thumbnail };
     if (token && gameId) {
-      dispatch(updateUserGameThunk(gameId, updatedData, token) as any);
+      setIsSubmitting(true); // Start loader
+      try {
+        await dispatch(updateUserGameThunk(gameId, updatedData, token) as any);
+        setToastMessage("Game updated successfully!");
+        setToastColor("green");
+        setTimeout(() => {
+          window.location.href = `/games/${gameId}`;
+        }, 800);
+      } catch (error) {
+        setToastMessage("Failed to update game. Please try again.");
+        setToastColor("red");
+      } finally {
+        setIsSubmitting(false); // Stop loader
+      }
     }
   };
 
@@ -193,35 +211,33 @@ const EditGame: React.FC = () => {
                   <input id="release_date" type="date" {...register("release_date")} className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
                   {errors.release_date && <p className="text-red-500 text-sm mt-1">{errors.release_date.message}</p>}
                 </div>
+
                 <div>
-                  <label htmlFor="end_date" className="block text-sm font-medium text-gray-300 mb-1">
-                    End Date
+                  <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">
+                    Description
                   </label>
-                  <input id="end_date" type="date" className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
+                  <textarea
+                    id="description"
+                    {...register("description")}
+                    placeholder="Enter game description"
+                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
+                  />
+                  {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  {...register("description")}
-                  placeholder="Enter game description"
-                  rows={4}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
-                />
-                {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
+              <div className="flex items-center justify-between">
+                <button type="submit" disabled={isSubmitting} className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50">
+                  {isSubmitting ? "Updating..." : "Update Game"}
+                </button>
               </div>
-
-              <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors duration-200">
-                Update Game
-              </button>
             </form>
           </div>
         </div>
       </div>
+
+      {/* Toaster Component */}
+      {toastMessage && <Toaster message={toastMessage} color={toastColor} />}
     </div>
   );
 };

@@ -88,6 +88,7 @@ export const fetchUserGamesThunk =
   (token: string, filters: Record<string, string> = {}, page: number = 1, limit: number = 50) =>
   async (dispatch: Dispatch, getState: () => { userGames: UserGamesState }) => {
     try {
+      console.log(filters);
       const { games, currentPage, totalPages } = await fetchUserGames(token, filters, page, limit);
       const reset = Object.keys(filters).length > 0 || page === 1;
       const existingGames = getState().userGames.games;

@@ -3,11 +3,13 @@ import { fetchGenresThunk } from "../store/genresReducer";
 import { fetchGamesThunk } from "../store/gamesReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import { setFilters } from "../store/gamesReducer";
 
 const GenreList = () => {
   const dispatch = useDispatch();
 
   const { data: genres, isLoadingGenre: genresLoading, error: genresError } = useSelector((state: RootState) => state.genres);
+  const { filters, currentPage, totalPages } = useSelector((state: RootState) => state.games);
 
   useEffect(() => {
     dispatch(fetchGenresThunk() as any);
@@ -16,8 +18,11 @@ const GenreList = () => {
   console.log(genresLoading);
 
   const handleGenreSelect = (genre: string) => {
-    const filters = { genre: genre };
-    dispatch(fetchGamesThunk(filters) as any);
+    if (genre === "all-games") {
+      dispatch(setFilters({ genre: "" }));
+    }
+    dispatch(setFilters({ genre: genre }));
+    dispatch(fetchGamesThunk() as any);
     // dispatch(fetchGenresThunk() as any);
   };
 

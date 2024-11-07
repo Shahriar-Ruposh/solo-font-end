@@ -22,7 +22,7 @@ const NavBar = () => {
               <Link to="/dashboard">
                 <button className="rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800">Dashboard</button>
               </Link>
-              <button className="rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800">{capitalizedName}</button>
+              <span className="text-sm font-medium text-gray-300">{capitalizedName}</span>
               <button
                 onClick={() => dispatch(logoutUserThunk() as any)}
                 className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800">

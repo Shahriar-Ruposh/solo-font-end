@@ -1,5 +1,3 @@
-"use client";
-
 import { useDispatch, useSelector } from "react-redux";
 import { loginUserThunk } from "../store/authReducer";
 import { RootState } from "../store/store";
@@ -7,6 +5,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const LoginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -19,6 +18,9 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const { isLoading, error } = useSelector((state: RootState) => state.auth);
   const [toastMessage, setToastMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     register,
@@ -30,8 +32,18 @@ const LoginForm = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await dispatch(loginUserThunk(data.email, data.password) as any);
-      setToastMessage("Login successful! Welcome back, gamer!");
+      setIsSubmitting(true);
+      const ab = await dispatch(loginUserThunk(data.email, data.password) as any);
+      setIsSubmitting(false);
+      if (!ab) {
+        setToastMessage("Login failed. Please check your credentials.");
+      } else {
+        setToastMessage("Login successful! Welcome back, Gamer!");
+
+        // Redirect to where the user came from, or default to the home page
+        const from = (location.state as { from?: string })?.from || "/";
+        navigate(from);
+      }
     } catch (err) {
       setToastMessage("Login failed. Please check your credentials.");
     }
@@ -39,7 +51,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (toastMessage) {
-      const timer = setTimeout(() => setToastMessage(""), 5000);
+      const timer = setTimeout(() => setToastMessage(""), 3000);
       return () => clearTimeout(timer);
     }
   }, [toastMessage]);
@@ -85,16 +97,27 @@ const LoginForm = () => {
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isSubmitting}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
-                {isLoading ? "Logging in..." : "Login"}
+                {isSubmitting ? "Logging in..." : "Login"}
               </button>
             </div>
           </form>
+
           {error && <p className="mt-4 text-sm text-red-500 text-center">{error}</p>}
+
+          <div className="text-center mt-4">
+            <p className="text-gray-400">
+              Don't have an account?{" "}
+              <Link to="/register" className="text-blue-500 hover:underline">
+                Sign Up
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
-      {toastMessage && <div className="fixed bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg animate-fade-in-up">{toastMessage}</div>}
+
+      {toastMessage && <div className="fixed top-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg animate-fade-in-up">{toastMessage}</div>}
     </div>
   );
 };

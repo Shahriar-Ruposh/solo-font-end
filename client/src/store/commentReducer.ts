@@ -20,7 +20,10 @@ export const commentReducer = (state = initialState, action: any) => {
     case SET_COMMENTS:
       return { ...state, comments: action.payload };
     case ADD_COMMENT:
-      return { ...state, comments: [...state.comments, action.payload] };
+      return {
+        ...state,
+        comments: [action.payload, ...state.comments], // Add the new comment at the top
+      };
     case SET_COMMENT_ERROR:
       return { ...state, error: action.payload };
     default:
@@ -46,7 +49,13 @@ export const fetchCommentsThunk = (gameId: string) => async (dispatch: Dispatch)
 export const postCommentThunk = (gameId: string, token: string, comment: string) => async (dispatch: Dispatch) => {
   try {
     const newComment = await postComment(gameId, token, comment);
-    dispatch(addComment(newComment));
+
+    // Ensure the new comment is valid before dispatching
+    if (newComment && newComment.id && newComment.User) {
+      dispatch(addComment(newComment));
+    } else {
+      throw new Error("Invalid comment structure.");
+    }
   } catch (error: Error | any) {
     dispatch(setCommentError(error.message));
   }

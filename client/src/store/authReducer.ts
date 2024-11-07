@@ -57,8 +57,11 @@ export const registerUserThunk = (name: string, email: string, password: string)
     localStorage.setItem("user", JSON.stringify(user));
 
     dispatch(setUser(user, token));
+
+    return true;
   } catch (error: any) {
     dispatch(setError(error.message || "Registration failed"));
+    return false;
   }
 };
 
@@ -72,8 +75,10 @@ export const loginUserThunk = (email: string, password: string) => async (dispat
     localStorage.setItem("user", JSON.stringify(user));
 
     dispatch(setUser(user, token));
+    return true;
   } catch (error: any) {
     dispatch(setError(error.message || "Login failed"));
+    return false;
   }
 };
 

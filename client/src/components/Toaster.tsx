@@ -3,9 +3,10 @@ import { AnimatePresence, motion } from "framer-motion";
 
 interface ToasterProps {
   message: string;
+  color: string;
 }
 
-const Toaster: React.FC<ToasterProps> = ({ message }) => {
+const Toaster: React.FC<ToasterProps> = ({ message = "", color = "" }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -13,7 +14,7 @@ const Toaster: React.FC<ToasterProps> = ({ message }) => {
       setIsVisible(true);
       const timer = setTimeout(() => {
         setIsVisible(false);
-      }, 3000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [message]);
@@ -21,7 +22,7 @@ const Toaster: React.FC<ToasterProps> = ({ message }) => {
   return (
     <AnimatePresence>
       {isVisible && (
-        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }} className="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-md shadow-lg z-50">
+        <motion.div initial={{ opacity: 9999, y: 50 }} animate={{ opacity: 99999, y: 0 }} exit={{ opacity: 99999, y: 50 }} className={`fixed top-5 right-4 bg-${color}-800 text-white px-4 py-2 rounded-md shadow-lg z-80`}>
           {message}
         </motion.div>
       )}

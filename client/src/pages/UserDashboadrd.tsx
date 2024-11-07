@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUserGamesThunk, setCurrentPage, deleteUserGameThunk } from "../store/userGameReducer";
 import { RootState } from "../store/store";
 import { Link } from "react-router-dom";
-import InfiniteScroll from "react-infinite-scroll-component";
 import GameCard from "../components/GameCard";
-import Search from "../components/Search";
 import Toaster from "../components/Toaster";
 import { Loader2, Plus, Edit, Trash2 } from "lucide-react";
-
+import _ from "lodash";
 import Modal from "../components/Modal"; // Adjust the import path accordingly
+import UserSearch from "../components/UserSearch";
 
 const UserDashboard: React.FC = () => {
   const { games, isLoading, error, currentPage, totalPages } = useSelector((state: RootState) => state.userGames);
   const token = useSelector((state: RootState) => state.auth.token);
   const dispatch = useDispatch();
   const [toastMessage, setToastMessage] = useState("");
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,18 +23,38 @@ const UserDashboard: React.FC = () => {
 
   useEffect(() => {
     if (token) {
-      dispatch(fetchUserGamesThunk(token, {}, currentPage, 20) as any);
+      dispatch(fetchUserGamesThunk(token, {}, currentPage, 20) as any).then(() => {
+        setIsFetchingMore(false);
+      });
     }
-  }, [dispatch, token, currentPage]);
+  }, [currentPage, gameToDelete]);
 
   const fetchMoreGames = () => {
-    setTimeout(() => {
-      if (currentPage < totalPages && token) {
-        dispatch(setCurrentPage(currentPage + 1));
-        dispatch(fetchUserGamesThunk(token, {}, currentPage + 1, 20) as any);
-      }
-    }, 1000);
+    if (currentPage < totalPages && !isLoading && !isFetchingMore && token) {
+      setIsFetchingMore(true);
+      const nextPage = currentPage + 1;
+      dispatch(setCurrentPage(nextPage));
+      dispatch(fetchUserGamesThunk(token, {}, nextPage, 20) as any).then(() => {
+        setIsFetchingMore(false);
+      });
+    }
   };
+
+  const handleScroll = useCallback(
+    _.debounce(() => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 && !isLoading && !isFetchingMore && currentPage < totalPages) {
+        fetchMoreGames();
+      }
+    }, 300),
+    [currentPage, totalPages, isLoading, isFetchingMore, token]
+  );
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   // Show confirmation modal for deleting a game
   const handleDeleteGame = (gameId: string) => {
@@ -81,52 +101,45 @@ const UserDashboard: React.FC = () => {
             Add Game
           </Link>
         </div>
-
-        <Search onLoading={handleLoading} onSearch={showToast} />
-
+        <UserSearch onLoading={handleLoading} onSearch={showToast} />
         <div className="mt-8">
           {isLoading && currentPage === 1 ? (
             <div className="flex justify-center items-center h-64">
               <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
             </div>
           ) : (
-            <InfiniteScroll
-              dataLength={games.length}
-              next={fetchMoreGames}
-              hasMore={currentPage < totalPages}
-              loader={
-                <div className="flex justify-center items-center py-4">
-                  <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-                </div>
-              }
-              endMessage={<p className="text-center text-gray-500 py-4">You've seen all your games.</p>}>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-fr">
-                {games?.map((game) => (
-                  <div key={game.id} className="bg-gray-800 rounded-lg shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl flex flex-col">
-                    <div className="flex-grow">
-                      <GameCard game={game} />
-                    </div>
-                    <div className="p-4 bg-gray-700 flex justify-between items-center">
-                      <Link to={`/dashboard/games/${game.id}`} style={{ backgroundColor: "#f4f6fb" }} className="flex items-center px-3 py-2 text-black rounded-md hover:bg-yellow-600 transition duration-300 ease-in-out">
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit
-                      </Link>
-                      <button onClick={() => handleDeleteGame(game.id)} className="flex items-center px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
-                        <Trash2 className="w-4 h-4 mr-2" />
-                      </button>
-                    </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-fr">
+              {games?.map((game) => (
+                <div key={game.id} className="bg-gray-800 rounded-lg shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl flex flex-col">
+                  <div className="flex-grow">
+                    <GameCard game={game} />
                   </div>
-                ))}
-              </div>
-            </InfiniteScroll>
+                  <div className="p-4 bg-gray-700 flex justify-between items-center">
+                    <Link to={`/dashboard/games/${game.id}`} style={{ backgroundColor: "#f4f6fb" }} className="flex items-center px-3 py-2 text-black rounded-md hover:bg-yellow-600 transition duration-300 ease-in-out">
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit
+                    </Link>
+                    <button onClick={() => handleDeleteGame(game.id)} className="flex items-center px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
+                      <Trash2 className="w-4 h-4 mr-2" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
+          {isFetchingMore && currentPage > 1 && (
+            <div className="flex justify-center items-center py-4">
+              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            </div>
+          )}
+          {games.length > 0 && currentPage >= totalPages && <p className="text-gray-500 py-4">You've seen all your games.</p>}
         </div>
       </main>
 
       {/* Confirmation Modal */}
       <Modal isOpen={isModalOpen} onClose={closeModal} onConfirm={confirmDeleteGame} />
 
-      <Toaster message={toastMessage} />
+      {/* <Toaster message={toastMessage} /> */}
     </div>
   );
 };

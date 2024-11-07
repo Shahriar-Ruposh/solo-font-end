@@ -1,5 +1,3 @@
-"use client";
-
 import { useDispatch, useSelector } from "react-redux";
 import { registerUserThunk } from "../store/authReducer";
 import { RootState } from "../store/store";
@@ -26,6 +24,7 @@ export default function SignUpForm() {
   const dispatch = useDispatch();
   const { isLoading, error } = useSelector((state: RootState) => state.auth);
   const [toastMessage, setToastMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -38,13 +37,21 @@ export default function SignUpForm() {
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
-      await dispatch(registerUserThunk(data.name, data.email, data.password) as any);
+      setIsSubmitting(true);
+      const ab = await dispatch(registerUserThunk(data.name, data.email, data.password) as any);
+      setIsSubmitting(false);
+      if (!ab) {
+        setToastMessage("Account creation failed. Please try again.");
+        setTimeout(() => setToastMessage(""), 800);
+        return;
+      }
       setToastMessage("Account created successfully! Welcome to our gaming community.");
       reset();
-      setTimeout(() => setToastMessage(""), 5000); // Clear toast after 5 seconds
+      window.location.href = "/";
+      setTimeout(() => setToastMessage(""), 800);
     } catch (err) {
       setToastMessage("There was a problem creating your account.");
-      setTimeout(() => setToastMessage(""), 5000);
+      setTimeout(() => setToastMessage(""), 800);
     }
   };
 
@@ -115,9 +122,9 @@ export default function SignUpForm() {
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isSubmitting}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
-                {isLoading ? "Creating Account..." : "Create Account"}
+                {isSubmitting ? "Creating Account..." : "Create Account"}
               </button>
             </div>
           </form>

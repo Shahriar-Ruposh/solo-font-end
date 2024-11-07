@@ -3,6 +3,8 @@ import GameList from "../components/GamesList";
 import GenreList from "../components/GenreList";
 import Search from "../components/Search";
 import Toaster from "../components/Toaster";
+import PublisherSearch from "../components/PublisherSearch";
+import SortByRating from "../components/SortByRating";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +22,13 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <main className="container mx-auto px-4 py-8">
-        <Search onLoading={handleLoading} onSearch={showToast} />
+        {/* Flex container for Search and PublisherSearch */}
+        <div className="flex gap-8">
+          <Search onLoading={handleLoading} onSearch={showToast} />
+          <PublisherSearch onLoading={handleLoading} onSearch={showToast} />
+          <SortByRating onLoading={handleLoading} />
+        </div>
+
         <div className="mt-8 flex flex-col lg:flex-row lg:gap-8">
           <aside className="w-full lg:w-64">
             <GenreList />
@@ -30,7 +38,7 @@ const Home = () => {
           </div>
         </div>
       </main>
-      <Toaster message={toastMessage} />
+      <Toaster message={toastMessage} color="green" />
     </div>
   );
 };
