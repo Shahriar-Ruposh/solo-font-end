@@ -1,12 +1,10 @@
-// src/store/store.ts
-import { createStore, applyMiddleware, combineReducers } from "redux";
-import { thunk } from "redux-thunk";
 import { authReducer } from "./authReducer";
 import { gamesReducer } from "./gamesReducer";
 import { genresReducer } from "./genresReducer";
 import { gameDetailsReducer } from "./gameDetailsReducer";
 import { commentReducer } from "./commentReducer";
 import { ratingReducer } from "./ratingReducer";
+import { userGamesReducer } from "./userGameReducer";
 
 import { configureStore } from "@reduxjs/toolkit";
 
@@ -34,6 +32,7 @@ const store = configureStore({
     games: gamesReducer,
     genres: genresReducer,
     gameDetails: gameDetailsReducer,
+    userGames: userGamesReducer,
     comment: commentReducer,
     rating: ratingReducer,
   },

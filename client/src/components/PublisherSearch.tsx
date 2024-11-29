@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchGamesThunk, setFilters } from "../store/gamesReducer";
 import { Loader2 } from "lucide-react";
+import { ImOffice } from "react-icons/im";
 
 interface SearchProps {
   onLoading: (loading: boolean) => void;
   onSearch: (message: string) => void;
 }
 
-const Search: React.FC<SearchProps> = ({ onLoading, onSearch }) => {
+const PublisherSearch: React.FC<SearchProps> = ({ onLoading, onSearch }) => {
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
@@ -34,8 +35,11 @@ const Search: React.FC<SearchProps> = ({ onLoading, onSearch }) => {
   const performSearch = (value: string) => {
     setIsSearching(true);
     onLoading(true);
-    dispatch(setFilters({ search: value.trim() }));
 
+    // Dispatch setFilters to update the search filter in the global state
+    dispatch(setFilters({ publisher: value.trim() }));
+
+    // Dispatch fetchGamesThunk to retrieve filtered results
     dispatch(fetchGamesThunk() as any)
       .then(() => {
         setIsSearching(false);
@@ -57,19 +61,17 @@ const Search: React.FC<SearchProps> = ({ onLoading, onSearch }) => {
 
   return (
     <form onSubmit={handleSearch} className="flex w-full max-w-sm items-center space-x-2 relative">
-      <input type="text" placeholder="Search games..." value={searchTerm} onChange={handleInputChange} className="w-full rounded-md bg-gray-800 px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <button type="submit" className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center" disabled={isSearching}>
-        {isSearching ? (
-          <>
-            <Loader2 className="w-5 h-5 animate-spin mr-2" />
-            Search
-          </>
-        ) : (
-          "Search"
-        )}
-      </button>
+      <input type="text" placeholder="Search by publisher..." value={searchTerm} onChange={handleInputChange} className="w-full rounded-md bg-gray-800 px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      {isSearching ? (
+        <>
+          <Loader2 className="w-5 h-5 animate-spin mr-2" />
+          Search
+        </>
+      ) : (
+        <ImOffice className="w-5 h-5 mr-2" />
+      )}
     </form>
   );
 };
 
-export default Search;
+export default PublisherSearch;
